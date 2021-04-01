@@ -33,13 +33,31 @@ public class Grid {
 
 
     }
-    //method that check every index is not out of range and also neighbour != cell
+
     private boolean checkIndex(int i, int j, int k , int l, int sizeMax){
 
+        //check every index which is not out of range and also if neighbour != cell
         if( i + k >= 0 && i + k < sizeMax && j + l >= 0 && j + l < sizeMax && (k != 0 || l != 0) ) return true;
         else return false;
 
     }
+
+
+    private int countNeighbourAlive(int i , int j){
+        int countNeighbour = 0;
+
+        // check out every neighbour one cell
+        for( int k = -1 ; k < 2 ; k++){
+            for( int l = -1 ; l < 2 ; l++) {
+
+                // check value of index and neighbour is alive or not
+                if( checkIndex(i, j, k, l,this.sizeGrid) && this.cells[i + k][j + l].isAlive() )countNeighbour++;
+
+            }
+        }
+        return countNeighbour;
+    }
+
 
     public void generateNextState() {
 
@@ -51,19 +69,10 @@ public class Grid {
         for (int i = 0; i < this.sizeGrid ; i++) {
             for (int j = 0; j < this.sizeGrid; j++) {
 
-                int countNeighbour = 0;
+                //return number neighbour check comment on countNeighbourAlive method
+                int countNeighbour = countNeighbourAlive(i , j);
 
-                // check out every neighbour of each cell
-                for( int k = -1 ; k < 2 ; k++){
-                    for( int l = -1 ; l < 2 ; l++) {
-
-                        // check value of index and neighbour is alive or not
-                        if( checkIndex(i, j, k, l,this.sizeGrid) && this.cells[i + k][j + l].isAlive() )countNeighbour++;
-
-                    }
-                }
-
-                // modify value according with the number of neighbour and also the cell value;
+                // initialize the cell and modify value according with the number of neighbour and also the cell value;
                 nextCells[i][j] = new Cell( true);
                 nextCells[i][j].setIsAlive( Cell.processState( this.cells[i][j].isAlive(), countNeighbour) );
 
